@@ -1,9 +1,9 @@
 const body = document.querySelector("body");
 const divPpal = document.createElement("div");
 body.appendChild(divPpal);
-const form = document.createElement('form')
+const imgLogo = document.createElement('img')
+const form = document.createElement("form");
 const divInput = document.createElement("div");
-
 const labelInput = document.createElement("label");
 const inputPoke = document.createElement("input");
 const btnEnviar = document.createElement("button");
@@ -22,7 +22,9 @@ const h3Item = document.createElement("h3");
 const h3NombreListLoc = document.createElement("h3");
 const listLoc = document.createElement("ul");
 const h3LocNoEncounter = document.createElement("h3");
+const h3NombreImagenesSprite = document.createElement("h3");
 const imagenesSprite = document.createElement("section");
+const h3NombreStats = document.createElement("h3");
 const stats = document.createElement("article");
 const h3Hp = document.createElement("h4");
 const h3Ataque = document.createElement("h4");
@@ -31,10 +33,17 @@ const h3AtaqueEspecial = document.createElement("h4");
 const h3DefensaEspecial = document.createElement("h4");
 const h3Velocidad = document.createElement("h4");
 
+body.style ='background-image:url(./img/charizard-with-legendary-pokemon-c4ks8chjijbepv61.jpg); background-repeat:no-repeat; background-size:cover; background-position:center'
+divPpal.style= 'display:flex; flex-direction:column; justify-content:center; align-items:center;'
+divPpal.appendChild(imgLogo)
+imgLogo.src = './img/descarga.png'
 divPpal.appendChild(form);
+form.style= 'display:flex; flex-direction:column; gap:1em;padding-top:2em; justify-content:center; align-items:center'
 form.appendChild(labelInput);
 labelInput.innerText = "Ingrese el nombre del Pokemon:";
+labelInput.style = 'font-size: 50px; color:#0000cd'
 form.appendChild(inputPoke);
+inputPoke.style= 'height:1.5em'
 form.appendChild(btnEnviar);
 btnEnviar.innerText = "Consultar";
 divPpal.appendChild(imgPokemon);
@@ -52,7 +61,9 @@ divPpal.appendChild(h3Item);
 divPpal.appendChild(h3NombreListLoc);
 divPpal.appendChild(listLoc);
 divPpal.appendChild(h3LocNoEncounter);
+divPpal.appendChild(h3NombreImagenesSprite);
 divPpal.appendChild(imagenesSprite);
+divPpal.appendChild(h3NombreStats);
 divPpal.appendChild(stats);
 stats.appendChild(h3Hp);
 stats.appendChild(h3Ataque);
@@ -70,16 +81,25 @@ const poke = async (name) => {
 
 const pokeInfo = async (name) => {
   const pokemon = await poke(name);
-
+  divPpal.style.backgroundColor ='#fff5ee'
+  inputPoke.value = ''
+  //Nombre Pokemon
   h1Name.innerText = `Nombre : ${pokemon.name}`;
 
+  //Id Pokemon
   h3Id.innerText = `Id : ${pokemon.id}`;
 
+  //Exp base Pokemon
   h3Experiencia.innerText = `Exp base: ${pokemon.base_experience}`;
 
+  //Altura Pokemon
   h3Altura.innerText = `Altura: ${pokemon.height}`;
 
+  //Peso Pokemon
+
   h3Peso.innerText = `Peso: ${pokemon.weight}`;
+
+  //Lista de juegos
 
   h3NombreListJuegos.innerText = "Lista de juegos en los que aparece:";
   const locGame = pokemon.game_indices;
@@ -89,8 +109,12 @@ const pokeInfo = async (name) => {
     listJuegos.appendChild(liGamens);
   });
 
+  //Tipo de pokemon
+
   const tipoPoke = pokemon.types[0].type.name;
   h3Tipo.innerText = `Tipo: ${tipoPoke}`;
+
+  ///Lista de movimientos
 
   h3NombreListMov.innerText = "Lista de movimientos:";
   const moveData = pokemon.moves;
@@ -100,18 +124,24 @@ const pokeInfo = async (name) => {
     listMov.append(liMove);
   });
 
+  //Item que usa, si usa
+
   if (pokemon.held_items.length !== 0) {
     const itemPoke = pokemon.held_items[0].item.name;
     h3Item.innerText = `Item que usa: ${itemPoke}`;
   } else {
-    h3Item.innerText = "No usa ningún item";
+    h3Item.innerText = "Este Pokemon no usa ningún item";
   }
+
+  //Areas de localizacion
 
   h3NombreListLoc.innerText = "Lista de areas donde se puede encontrar:";
 
   const locPoke = pokemon.location_area_encounters;
   const locPokeData = await fetch(locPoke);
   const locPokeDataResult = await locPokeData.json();
+  listLoc.innerText = ''
+  h3LocNoEncounter.innerText= ''
   console.log(locPokeDataResult);
 
   if (locPokeDataResult.length !== 0) {
@@ -123,8 +153,12 @@ const pokeInfo = async (name) => {
   } else {
     h3LocNoEncounter.innerText = `${pokemon.name} no se puede encontrar en ningun area`;
   }
-//h3 de nombre de las imagenes 
-imagenesSprite.innerHTML=''
+
+  //Imagenes en distintas versiones
+
+  h3NombreImagenesSprite.innerText =
+    "Imagenes en distintas versionnes y juegos:";
+  imagenesSprite.innerHTML = "";
   const imagenes = pokemon.sprites;
   const imagenesUrl = Object.values(imagenes).slice(0, 8);
   console.log(imagenesUrl);
@@ -134,6 +168,7 @@ imagenesSprite.innerHTML=''
     if (indice % 2 === 0) {
       const resultImg = document.createElement("img");
       resultImg.src = img.url;
+      resultImg.style.width = "25em";
       imagenesSprite.appendChild(resultImg);
     }
   });
@@ -155,16 +190,18 @@ imagenesSprite.innerHTML=''
     if (indice % 2 === 0) {
       const resultImg = document.createElement("img");
       resultImg.src = img.url;
+      resultImg.style.width = "25em";
       imagenesSprite.appendChild(resultImg);
     }
   });
-  
+
   const ulrPos1 = await Promise.all(arrayUrls[1].map((url) => fetch(url)));
   console.log(ulrPos1);
   ulrPos1.forEach((img, indice) => {
     if (indice % 2 === 0) {
       const resultImg = document.createElement("img");
       resultImg.src = img.url;
+      resultImg.style.width = "25em";
       imagenesSprite.appendChild(resultImg);
     }
   });
@@ -172,23 +209,31 @@ imagenesSprite.innerHTML=''
   const urlPos2 = await Promise.all(arrayUrls[2].map((url) => fetch(url)));
   console.log(urlPos2);
   urlPos2.forEach((img) => {
-     
-      const resultImg = document.createElement("img");
-      resultImg.src = img.url;
-      imagenesSprite.appendChild(resultImg);
-    
+    const resultImg = document.createElement("img");
+    resultImg.src = img.url;
+    resultImg.style.width = "25em";
+    imagenesSprite.appendChild(resultImg);
   });
 
+  //Imagen Principal
   const imgPrincipal = await Promise.all(arrayUrls[1].map((url) => fetch(url)));
   console.log(imgPrincipal);
-  imgPokemon.src = imgPrincipal[0].url
+  imgPokemon.src = imgPrincipal[0].url;
 
+  //Card Pokemon
+  h3NombreStats.innerText = "Stats base de este Pokemon:";
+  const statsBase = pokemon.stats;
+  console.table(statsBase);
+  h3Hp.innerText = `HP: ${statsBase[0].base_stat}`;
+  h3Ataque.innerText = `Ataque: ${statsBase[1].base_stat}`;
+  h3Defensa.innerText = `Defensa: ${statsBase[2].base_stat}`;
+  h3AtaqueEspecial.innerText = `Ataque especial: ${statsBase[3].base_stat}`;
+  h3DefensaEspecial.innerText = `Defensa Especial: ${statsBase[4].base_stat}`;
+  h3Velocidad.innerText = `Velocidad: ${statsBase[5].base_stat}`;
 };
 
-
-btnEnviar.addEventListener('click', (e)=>{
-  e.preventDefault()
-  pokeInfo(inputPoke.value)
+btnEnviar.addEventListener("click", (e) => {
+  e.preventDefault();
+  pokeInfo(inputPoke.value);
   
-})
-// pokeInfo("nidoking");
+});
