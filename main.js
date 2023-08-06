@@ -1,7 +1,9 @@
 const body = document.querySelector("body");
 const divPpal = document.createElement("div");
 body.appendChild(divPpal);
+const form = document.createElement('form')
 const divInput = document.createElement("div");
+
 const labelInput = document.createElement("label");
 const inputPoke = document.createElement("input");
 const btnEnviar = document.createElement("button");
@@ -29,11 +31,11 @@ const h3AtaqueEspecial = document.createElement("h4");
 const h3DefensaEspecial = document.createElement("h4");
 const h3Velocidad = document.createElement("h4");
 
-divPpal.appendChild(divInput);
-divInput.appendChild(labelInput);
+divPpal.appendChild(form);
+form.appendChild(labelInput);
 labelInput.innerText = "Ingrese el nombre del Pokemon:";
-divInput.appendChild(inputPoke);
-divInput.appendChild(btnEnviar);
+form.appendChild(inputPoke);
+form.appendChild(btnEnviar);
 btnEnviar.innerText = "Consultar";
 divPpal.appendChild(imgPokemon);
 divPpal.appendChild(h1Name);
@@ -121,10 +123,72 @@ const pokeInfo = async (name) => {
   } else {
     h3LocNoEncounter.innerText = `${pokemon.name} no se puede encontrar en ningun area`;
   }
-
+//h3 de nombre de las imagenes 
+imagenesSprite.innerHTML=''
   const imagenes = pokemon.sprites;
-  const imagenesUrl = Object.values(imagenes).slice(0, 9);
+  const imagenesUrl = Object.values(imagenes).slice(0, 8);
   console.log(imagenesUrl);
+  const imgData = await Promise.all(imagenesUrl.map((url) => fetch(url)));
+  console.log(imgData);
+  imgData.forEach((img, indice) => {
+    if (indice % 2 === 0) {
+      const resultImg = document.createElement("img");
+      resultImg.src = img.url;
+      imagenesSprite.appendChild(resultImg);
+    }
+  });
+
+  const imgOther = imagenes.other;
+  console.log(imgOther);
+  const otherObject = Object.values(imgOther);
+  console.log(otherObject);
+
+  const arrayUrls = otherObject.map((element) => {
+    const ulrImg = Object.values(element);
+    return ulrImg;
+  }); // la imagen que quiero que se muestre al principio esta en other en el primer objeto
+  console.log(arrayUrls);
+
+  const ulrPos0 = await Promise.all(arrayUrls[0].map((url) => fetch(url)));
+  console.log(ulrPos0);
+  ulrPos0.forEach((img, indice) => {
+    if (indice % 2 === 0) {
+      const resultImg = document.createElement("img");
+      resultImg.src = img.url;
+      imagenesSprite.appendChild(resultImg);
+    }
+  });
+  
+  const ulrPos1 = await Promise.all(arrayUrls[1].map((url) => fetch(url)));
+  console.log(ulrPos1);
+  ulrPos1.forEach((img, indice) => {
+    if (indice % 2 === 0) {
+      const resultImg = document.createElement("img");
+      resultImg.src = img.url;
+      imagenesSprite.appendChild(resultImg);
+    }
+  });
+
+  const urlPos2 = await Promise.all(arrayUrls[2].map((url) => fetch(url)));
+  console.log(urlPos2);
+  urlPos2.forEach((img) => {
+     
+      const resultImg = document.createElement("img");
+      resultImg.src = img.url;
+      imagenesSprite.appendChild(resultImg);
+    
+  });
+
+  const imgPrincipal = await Promise.all(arrayUrls[1].map((url) => fetch(url)));
+  console.log(imgPrincipal);
+  imgPokemon.src = imgPrincipal[0].url
+
 };
 
-pokeInfo("blastoise");
+
+btnEnviar.addEventListener('click', (e)=>{
+  e.preventDefault()
+  pokeInfo(inputPoke.value)
+  
+})
+// pokeInfo("nidoking");
